@@ -1,6 +1,4 @@
-package main
-
-import "fmt"
+package gopark
 
 // fibonacci is a function that returns
 // a function that returns an int.
@@ -19,12 +17,4 @@ func fibonacci() func() int {
 		cursors[0] = temp
 		return retVal
 	}
-}
-
-func main() {
-	f := fibonacci()
-	for i := 0; i < 20; i++ {
-		fmt.Printf("%d ", f())
-	}
-	fmt.Println()
 }
