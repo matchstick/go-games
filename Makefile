@@ -22,7 +22,15 @@ build:
 	go build -v crawl.go
 	go build -v fib.go
 
-all: fix vet fmt tidy build lint test
+covhtml:
+	go test ./... -coverprofile=cov.out
+	go tool cover -html=cov.out
+
+covfunc:
+	go test ./... -coverprofile=cov.out
+	go tool cover -func=cov.out
+
+
 
 clean:
 	rm -f crawl fib out
