@@ -1,5 +1,6 @@
 package gopark
 
+/* crawl test and program lifted from the golang tour */
 import (
 	"fmt"
 	"testing"
@@ -54,7 +55,31 @@ var fetcher = fakeFetcher{
 	},
 }
 
+func verifyDB(t *testing.T, db *safeDB) {
+	var expected = map[string]elem{
+		"https://golang.org/":         {"The Go Programming Language", 4, ""},
+		"https://golang.org/pkg/":     {"Packages", 3, ""},
+		"https://golang.org/cmd/":     {"", 2, "not found: https://golang.org/cmd/"},
+		"https://golang.org/pkg/os/":  {"Package os", 1, ""},
+		"https://golang.org/pkg/fmt/": {"Package fmt", 1, ""},
+	}
+
+	for k, e := range expected {
+		testElem, ok := db.db[k]
+		if !ok {
+			t.Errorf("%s is not present.", k)
+			continue
+		}
+
+		if e != testElem {
+			t.Errorf("Elements don't match for key %s", k)
+			continue
+		}
+	}
+}
+
 func TestCrawl(t *testing.T) {
-	db := safeDB{db: make(map[string]bool)}
+	db := safeDB{db: make(map[string]elem)}
 	Crawl("https://golang.org/", 4, fetcher, &db)
+	verifyDB(t, &db)
 }
