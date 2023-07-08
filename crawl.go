@@ -25,6 +25,8 @@ type safeDB struct {
 	db map[string]elem
 }
 
+// This routine must be called when the
+// db lock is locked.
 func (db *safeDB) isFetchedLocked(url string) bool {
 	elem, present := db.db[url]
 	if !present {
@@ -46,11 +48,11 @@ func (db *safeDB) add(url string, body string, err error) {
 		return
 	}
 
+	errMsg := ""
 	if err != nil {
-		db.db[url] = elem{body, 1, err.Error()}
-	} else {
-		db.db[url] = elem{body, 1, ""}
+		errMsg = err.Error()
 	}
+	db.db[url] = elem{body, 1, errMsg}
 }
 
 func (db *safeDB) isFetched(url string) bool {
